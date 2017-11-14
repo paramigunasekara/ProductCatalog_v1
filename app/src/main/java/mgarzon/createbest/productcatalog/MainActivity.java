@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextPrice;
     Button buttonAddProduct;
     ListView listViewProducts;
-
+    DatabaseReference databaseProducts;
     List<Product> products;
 
     @Override
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         editTextPrice = (EditText) findViewById(R.id.editTextPrice);
         listViewProducts = (ListView) findViewById(R.id.listViewProducts);
         buttonAddProduct = (Button) findViewById(R.id.addButton);
-
+        databaseProducts = FirebaseDatabase.getInstance().getReference("products");
         products = new ArrayList<>();
 
         //adding an onclicklistener to button
@@ -104,6 +104,32 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 deleteProduct(productId);
                 b.dismiss();
+            }
+        });
+
+        databaseProducts.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //clearing the previous artist list
+                products.clear();
+
+                //iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    //getting product
+                    Product product = postSnapshot.getValue(Product.class);
+                    //adding product to the list
+                    products.add(product);
+                }
+
+                //creating adapter
+                ProductList productsAdapter = new ProductList(MainActivity.this, products);
+                //attaching new adapter to the list view
+                listViewProducts.setAdapter(productsAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
