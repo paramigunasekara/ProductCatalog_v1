@@ -68,6 +68,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        databaseProducts.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //clearing the previous artist list
+                products.clear();
+
+                //iterating through all the nodes
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    //getting product
+                    Product product = postSnapshot.getValue(Product.class);
+                    //adding product to the list
+                    products.add(product);
+                }
+
+                //creating adapter
+                ProductList productsAdapter = new ProductList(MainActivity.this, products);
+                //attaching new adapter to the list view
+                listViewProducts.setAdapter(productsAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
 
@@ -107,31 +133,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        databaseProducts.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //clearing the previous artist list
-                products.clear();
-
-                //iterating through all the nodes
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    //getting product
-                    Product product = postSnapshot.getValue(Product.class);
-                    //adding product to the list
-                    products.add(product);
-                }
-
-                //creating adapter
-                ProductList productsAdapter = new ProductList(MainActivity.this, products);
-                //attaching new adapter to the list view
-                listViewProducts.setAdapter(productsAdapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
     }
 
     private void updateProduct(String id, String name, double price) {
