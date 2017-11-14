@@ -146,6 +146,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void addProduct() {
 
-        Toast.makeText(this, "NOT IMPLEMENTED YET", Toast.LENGTH_LONG).show();
+        //getting the values to save
+        String name = editTextName.getText().toString().trim();
+        double price = Double.parseDouble(String.valueOf(editTextPrice.getText().toString()));
+
+        //checking if the value is provided
+        if (!TextUtils.isEmpty(name)) {
+
+            //getting a unique id using push().getKey() method
+            //it will create a unique id and we will use it as the primary key for our Product
+            String id = databaseProducts.push().getKey();
+
+            //creating a Product Object
+            Product product = new Product(id, name, price);
+
+            //saving the product
+            databaseProducts.child(id).setValue(product);
+
+            //setting edittext to blank again
+            editTextName.setText("");
+            editTextPrice.setText("");
+
+            //displaying a success toast
+            Toast.makeText(this, "Product added", Toast.LENGTH_LONG).show();
+        } else {
+            //if the value is not given displaying a toast
+            Toast.makeText(this, "Please enter a name", Toast.LENGTH_LONG).show();
+        }
     }
 }
