@@ -136,12 +136,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateProduct(String id, String name, double price) {
 
-        Toast.makeText(getApplicationContext(), "NOT IMPLEMENTED YET", Toast.LENGTH_LONG).show();
+        //getting the specified product reference
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("products").child(id);
+        //updating the product
+        Product product = new Product(id, name, price);
+        dR.setValue(product);
+
+        Toast.makeText(getApplicationContext(), "Product Updated", Toast.LENGTH_LONG).show();
     }
 
-    private void deleteProduct(String id) {
+    private boolean deleteProduct(String id) {
 
-        Toast.makeText(getApplicationContext(), "NOT IMPLEMENTED YET", Toast.LENGTH_LONG).show();
+        //getting the specified product reference
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("products").child(id);
+        //removing product
+        dR.removeValue();
+        Toast.makeText(getApplicationContext(), "Product Deleted", Toast.LENGTH_LONG).show();
+        return true;
     }
 
     private void addProduct() {
